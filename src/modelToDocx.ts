@@ -127,7 +127,7 @@ export async function modelToDocx(
           headers: node.headers,
           rows: node.rows,
         };
-        return [processTable(tableData, documentType)];
+        return [processTable(tableData, documentType, style)];
       }
 
       case "comment": {

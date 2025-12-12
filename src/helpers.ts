@@ -44,6 +44,7 @@ export function processHeading(
   const headingText = line.replace(new RegExp(`^#{${config.level}} `), "");
   const headingLevel = config.level;
   const headingColor = getHeadingColor(headingLevel, style);
+  const headingFont = getHeadingFont(headingLevel, style);
   // Generate a unique bookmark ID using the clean text (without markdown)
   const cleanTextForBookmark = headingText
     .replace(/\*\*/g, "")
@@ -95,7 +96,8 @@ export function processHeading(
     headingText,
     headingSize,
     style,
-    headingColor
+    headingColor,
+    headingFont
   );
 
   // Create the paragraph with bookmark
@@ -131,7 +133,8 @@ function processFormattedTextForHeading(
   text: string,
   fontSize: number,
   style?: Style,
-  color = "000000"
+  color = "000000",
+  font?: string
 ): TextRun[] {
   const textRuns: TextRun[] = [];
   let currentText = "";
@@ -166,6 +169,7 @@ function processFormattedTextForHeading(
             bold: isBold,
             italics: isItalic,
             color,
+            font,
             size: fontSize,
             rightToLeft: style?.direction === "RTL",
           })
@@ -197,6 +201,7 @@ function processFormattedTextForHeading(
             bold: isBold,
             italics: isItalic,
             color,
+            font,
             size: fontSize,
             rightToLeft: style?.direction === "RTL",
           })
@@ -229,6 +234,7 @@ function processFormattedTextForHeading(
             bold: isBold,
             italics: isItalic,
             color,
+            font,
             size: fontSize,
             rightToLeft: style?.direction === "RTL",
           })
@@ -284,6 +290,7 @@ function processFormattedTextForHeading(
           bold: isBold,
           italics: isItalic,
           color,
+          font,
           size: fontSize,
           rightToLeft: style?.direction === "RTL",
         })
@@ -297,6 +304,7 @@ function processFormattedTextForHeading(
       new TextRun({
         text: "",
         color,
+        font,
         size: fontSize,
         bold: true, // Headings are bold by default
       })
@@ -314,7 +322,8 @@ function processFormattedTextForHeading(
  */
 export function processTable(
   tableData: TableData,
-  documentType: "document" | "report"
+  documentType: "document" | "report",
+  style?: Style,
 ): Table {
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
@@ -333,6 +342,7 @@ export function processTable(
                       text: header,
                       bold: true,
                       color: "000000",
+                      font: style?.tableFont || style?.baseFont,
                     }),
                   ],
                 }),
@@ -355,6 +365,7 @@ export function processTable(
                         new TextRun({
                           text: cell,
                           color: "000000",
+                          font: style?.tableFont || style?.baseFont,
                           rightToLeft: false,
                         }),
                       ],
@@ -403,6 +414,7 @@ export function processListItem(
         text: config.boldText,
         bold: true,
         color: "000000",
+        font: style?.listFont || style?.baseFont,
         size: style.listItemSize || 24,
       })
     );
@@ -475,6 +487,7 @@ export function processBlockquote(text: string, style: Style): Paragraph {
         text: text,
         italics: true,
         color: "000000",
+        font: style?.blockquoteFont || style?.baseFont,
         size: style.blockquoteSize || 24, // Use custom blockquote size if provided
         rightToLeft: style.direction === "RTL",
       }),
@@ -592,6 +605,7 @@ export function processFormattedText(line: string, style?: Style): (TextRun | Ex
               bold: isBold,
               italics: isItalic,
               color: "000000",
+              font: style?.paragraphFont || style?.baseFont,
               size: style?.paragraphSize || 24,
               rightToLeft: style?.direction === "RTL",
             })
@@ -613,6 +627,7 @@ export function processFormattedText(line: string, style?: Style): (TextRun | Ex
                 underline: { type: "single" },
                 bold: isBold,
                 italics: isItalic,
+                font: style?.paragraphFont || style?.baseFont,
                 size: style?.paragraphSize || 24,
                 rightToLeft: style?.direction === "RTL",
               }),
@@ -637,6 +652,7 @@ export function processFormattedText(line: string, style?: Style): (TextRun | Ex
             bold: isBold,
             italics: isItalic,
             color: "000000",
+            font: style?.paragraphFont || style?.baseFont,
             size: style?.paragraphSize || 24,
             rightToLeft: style?.direction === "RTL",
           })
@@ -673,6 +689,7 @@ export function processFormattedText(line: string, style?: Style): (TextRun | Ex
             bold: isBold,
             italics: isItalic,
             color: "000000",
+            font: style?.paragraphFont || style?.baseFont,
             size: style?.paragraphSize || 24,
             rightToLeft: style?.direction === "RTL",
           })
@@ -704,6 +721,7 @@ export function processFormattedText(line: string, style?: Style): (TextRun | Ex
             bold: isBold,
             italics: isItalic,
             color: "000000",
+            font: style?.paragraphFont || style?.baseFont,
             size: style?.paragraphSize || 24,
             rightToLeft: style?.direction === "RTL",
           })
@@ -736,6 +754,7 @@ export function processFormattedText(line: string, style?: Style): (TextRun | Ex
             bold: isBold,
             italics: isItalic,
             color: "000000",
+            font: style?.paragraphFont || style?.baseFont,
             size: style?.paragraphSize || 24,
           })
         );
@@ -795,6 +814,7 @@ export function processFormattedText(line: string, style?: Style): (TextRun | Ex
           bold: isBold,
           italics: isItalic,
           color: "000000",
+          font: style?.paragraphFont || style?.baseFont,
           size: style?.paragraphSize || 24,
           rightToLeft: style?.direction === "RTL",
         })
@@ -808,6 +828,7 @@ export function processFormattedText(line: string, style?: Style): (TextRun | Ex
       new TextRun({
         text: "",
         color: "000000",
+        font: style?.paragraphFont || style?.baseFont,
         size: style?.paragraphSize || 24,
       })
     );
@@ -868,9 +889,9 @@ export function collectTables(lines: string[]): TableData[] {
 export function processInlineCode(code: string, style?: Style): TextRun {
   return new TextRun({
     text: code,
-    font: "Courier New",
     size: style?.paragraphSize ? style.paragraphSize - 2 : 20,
     color: "444444",
+    font: style?.codeFont || 'Courier New',
     shading: {
       fill: "F5F5F5",
     },
@@ -901,7 +922,7 @@ export function processCodeBlock(
     codeRuns.push(
       new TextRun({
         text: language,
-        font: "Courier New",
+        font: style?.codeFont || 'Courier New',
         size: style.codeBlockSize || 18,
         color: "666666",
         bold: true,
@@ -1362,5 +1383,17 @@ function getHeadingColor(level: number, style?: Style): string {
     (level === 5 && style?.heading5Color) ||
     style?.headingColor ||
     "000000"
+  );
+}
+
+function getHeadingFont(level: number, style?: Style): string {
+  return (
+    (level === 1 && style?.heading1Font) ||
+    (level === 2 && style?.heading2Font) ||
+    (level === 3 && style?.heading3Font) ||
+    (level === 4 && style?.heading4Font) ||
+    (level === 5 && style?.heading5Font) ||
+    style?.headingFont ||
+    "Calibri"
   );
 }
