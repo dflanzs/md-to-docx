@@ -48,6 +48,20 @@ export interface Style {
   heading4Alignment?: "LEFT" | "CENTER" | "RIGHT" | "JUSTIFIED";
   heading5Alignment?: "LEFT" | "CENTER" | "RIGHT" | "JUSTIFIED";
   blockquoteAlignment?: "LEFT" | "CENTER" | "RIGHT" | "JUSTIFIED";
+  // Font options
+  baseFont?: string;        
+  headingFont?: string;   
+  heading1Font?: string;  
+  heading2Font?: string; 
+  heading3Font?: string; 
+  heading4Font?: string; 
+  heading5Font?: string;
+  paragraphFont?: string;
+  listFont?: string;    
+  codeFont?: string;   
+  blockquoteFont?: string;
+  tableFont?: string;    
+  tocFont?: string;     
 }
 
 export interface Options {
