@@ -12,7 +12,6 @@ import {
   ExternalHyperlink,
   ImageRun,
   Bookmark,
-  InternalHyperlink,
 } from "docx";
 import { Style, TableData, HeadingConfig, ListItemConfig } from "./types.js";
 
@@ -44,6 +43,7 @@ export function processHeading(
 ): { paragraph: Paragraph; bookmarkId: string } {
   const headingText = line.replace(new RegExp(`^#{${config.level}} `), "");
   const headingLevel = config.level;
+  const headingColor = getHeadingColor(headingLevel, style);
   // Generate a unique bookmark ID using the clean text (without markdown)
   const cleanTextForBookmark = headingText
     .replace(/\*\*/g, "")
@@ -94,7 +94,8 @@ export function processHeading(
   const processedTextRuns = processFormattedTextForHeading(
     headingText,
     headingSize,
-    style
+    style,
+    headingColor
   );
 
   // Create the paragraph with bookmark
@@ -129,7 +130,8 @@ export function processHeading(
 function processFormattedTextForHeading(
   text: string,
   fontSize: number,
-  style?: Style
+  style?: Style,
+  color = "000000"
 ): TextRun[] {
   const textRuns: TextRun[] = [];
   let currentText = "";
@@ -163,7 +165,7 @@ function processFormattedTextForHeading(
             text: currentText,
             bold: isBold,
             italics: isItalic,
-            color: "000000",
+            color,
             size: fontSize,
             rightToLeft: style?.direction === "RTL",
           })
@@ -194,7 +196,7 @@ function processFormattedTextForHeading(
             text: currentText,
             bold: isBold,
             italics: isItalic,
-            color: "000000",
+            color,
             size: fontSize,
             rightToLeft: style?.direction === "RTL",
           })
@@ -226,7 +228,7 @@ function processFormattedTextForHeading(
             text: currentText,
             bold: isBold,
             italics: isItalic,
-            color: "000000",
+            color,
             size: fontSize,
             rightToLeft: style?.direction === "RTL",
           })
@@ -281,7 +283,7 @@ function processFormattedTextForHeading(
           text: currentText,
           bold: isBold,
           italics: isItalic,
-          color: "000000",
+          color,
           size: fontSize,
           rightToLeft: style?.direction === "RTL",
         })
@@ -294,7 +296,7 @@ function processFormattedTextForHeading(
     textRuns.push(
       new TextRun({
         text: "",
-        color: "000000",
+        color,
         size: fontSize,
         bold: true, // Headings are bold by default
       })
@@ -1349,4 +1351,16 @@ export function processParagraph(text: string, style: Style): Paragraph {
     indent,
     bidirectional: style.direction === "RTL",
   });
+}
+
+function getHeadingColor(level: number, style?: Style): string {
+  return (
+    (level === 1 && style?.heading1Color) ||
+    (level === 2 && style?.heading2Color) ||
+    (level === 3 && style?.heading3Color) ||
+    (level === 4 && style?.heading4Color) ||
+    (level === 5 && style?.heading5Color) ||
+    style?.headingColor ||
+    "000000"
+  );
 }

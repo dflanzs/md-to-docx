@@ -32,6 +32,13 @@ export interface Style {
   tocHeading3Italic?: boolean;
   tocHeading4Italic?: boolean;
   tocHeading5Italic?: boolean;
+  // Heading color options
+  headingColor?: string;
+  heading1Color?: string;
+  heading2Color?: string;
+  heading3Color?: string;
+  heading4Color?: string;
+  heading5Color?: string;
   // Alignment options
   paragraphAlignment?: "LEFT" | "CENTER" | "RIGHT" | "JUSTIFIED";
   headingAlignment?: "LEFT" | "CENTER" | "RIGHT" | "JUSTIFIED";
