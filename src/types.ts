@@ -32,7 +32,8 @@ export interface Style {
   tocHeading3Italic?: boolean;
   tocHeading4Italic?: boolean;
   tocHeading5Italic?: boolean;
-  // Heading color options
+  // Color options
+  tittleColor?: string;
   headingColor?: string;
   heading1Color?: string;
   heading2Color?: string;
@@ -50,6 +51,7 @@ export interface Style {
   blockquoteAlignment?: "LEFT" | "CENTER" | "RIGHT" | "JUSTIFIED";
   // Font options
   baseFont?: string;        
+  tittleFont?: string;
   headingFont?: string;   
   heading1Font?: string;  
   heading2Font?: string; 
