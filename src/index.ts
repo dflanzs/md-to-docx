@@ -14,19 +14,13 @@ import {
   IPropertiesOptions,
 } from "docx";
 import saveAs from "file-saver";
-import { Options, Style } from "./types.js";
+import { Options, Style, defaultStyle as baseDefaultStyle } from "./types.js";
 import { parseMarkdownToAst, applyTextReplacements } from "./markdownAst.js";
 import { mdastToDocxModel } from "./mdastToDocxModel.js";
 import { modelToDocx } from "./modelToDocx.js";
+import { toDocxFontSize } from "./utils/fontSize.js";
 
-const defaultStyle: Style = {
-  titleSize: 32,
-  headingSpacing: 240,
-  paragraphSpacing: 240,
-  lineSpacing: 1.15,
-  paragraphAlignment: "LEFT",
-  direction: "LTR",
-};
+const defaultStyle: Style = { ...baseDefaultStyle };
 
 const defaultOptions: Options = {
   documentType: "document",
@@ -207,8 +201,8 @@ export async function parseToDocxOptions (
         // Use default calculation if no specific size provided
         if (!fontSize) {
           fontSize = style.paragraphSize
-            ? style.paragraphSize - (heading.level - 1) * 2
-            : 24 - (heading.level - 1) * 2;
+            ? style.paragraphSize - (heading.level - 1)
+            : 12 - (heading.level - 1);
         }
 
         tocContent.push(
@@ -219,7 +213,7 @@ export async function parseToDocxOptions (
                 children: [
                   new TextRun({
                     text: heading.text,
-                    size: fontSize,
+                    size: toDocxFontSize(fontSize),
                     bold: isBold,
                     italics: isItalic,
                   }),
@@ -322,7 +316,7 @@ export async function parseToDocxOptions (
             next: "Normal",
             quickFormat: true,
             run: {
-              size: style.titleSize,
+              size: toDocxFontSize(style.titleSize),
               bold: true,
               color: style.tittleColor || "000000",
               font: style.tittleFont || style.baseFont,
@@ -342,9 +336,10 @@ export async function parseToDocxOptions (
             next: "Normal",
             quickFormat: true,
             run: {
-              size: style.titleSize,
+              size: toDocxFontSize(style.heading1Size || style.titleSize),
               bold: true,
-              color: "000000",
+              color: style.heading1Color || style.headingColor || "000000",
+              font: style.heading1Font || style.headingFont || style.baseFont,
             },
             paragraph: {
               spacing: {
@@ -361,9 +356,10 @@ export async function parseToDocxOptions (
             next: "Normal",
             quickFormat: true,
             run: {
-              size: style.titleSize - 4,
+              size: toDocxFontSize(style.heading2Size || style.titleSize),
               bold: true,
-              color: "000000",
+              color: style.heading2Color || style.headingColor || "000000",
+              font: style.heading2Font || style.headingFont || style.baseFont,
             },
             paragraph: {
               spacing: {
@@ -380,9 +376,10 @@ export async function parseToDocxOptions (
             next: "Normal",
             quickFormat: true,
             run: {
-              size: style.titleSize - 8,
+              size: toDocxFontSize(style.heading3Size || style.titleSize),
               bold: true,
-              color: "000000",
+              color: style.heading3Color || style.headingColor || "000000",
+              font: style.heading3Font || style.headingFont || style.baseFont,
             },
             paragraph: {
               spacing: {
@@ -399,9 +396,10 @@ export async function parseToDocxOptions (
             next: "Normal",
             quickFormat: true,
             run: {
-              size: style.titleSize - 12,
+              size: toDocxFontSize(style.heading4Size || style.titleSize),
               bold: true,
-              color: "000000",
+              color: style.heading4Color || style.headingColor || "000000",
+              font: style.heading4Font || style.headingFont || style.baseFont,
             },
             paragraph: {
               spacing: {
@@ -418,9 +416,10 @@ export async function parseToDocxOptions (
             next: "Normal",
             quickFormat: true,
             run: {
-              size: style.titleSize - 16,
+              size: toDocxFontSize(style.heading5Size || style.titleSize),
               bold: true,
-              color: "000000",
+              color: style.heading5Color || style.headingColor || "000000",
+              font: style.heading5Font || style.headingFont || style.baseFont,
             },
             paragraph: {
               spacing: {
