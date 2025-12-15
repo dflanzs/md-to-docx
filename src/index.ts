@@ -324,7 +324,8 @@ export async function parseToDocxOptions (
             run: {
               size: style.titleSize,
               bold: true,
-              color: "000000",
+              color: style.tittleColor || "000000",
+              font: style.tittleFont || style.baseFont,
             },
             paragraph: {
               spacing: {
