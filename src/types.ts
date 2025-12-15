@@ -113,21 +113,21 @@ export interface TextReplacement {
 }
 
 export const defaultStyle: Style = {
-  titleSize: 32,
+  titleSize: 16,
   headingSpacing: 240,
   paragraphSpacing: 240,
   lineSpacing: 1.15,
   direction: "LTR",
-  // Default font sizes
-  heading1Size: 32,
-  heading2Size: 28,
-  heading3Size: 24,
-  heading4Size: 20,
-  heading5Size: 18,
-  paragraphSize: 24,
-  listItemSize: 24,
-  codeBlockSize: 20,
-  blockquoteSize: 24,
+  // Default font sizes (points)
+  heading1Size: 16,
+  heading2Size: 14,
+  heading3Size: 12,
+  heading4Size: 10,
+  heading5Size: 9,
+  paragraphSize: 12,
+  listItemSize: 12,
+  codeBlockSize: 10,
+  blockquoteSize: 12,
   // Default alignments
   paragraphAlignment: "LEFT",
   heading1Alignment: "LEFT",
